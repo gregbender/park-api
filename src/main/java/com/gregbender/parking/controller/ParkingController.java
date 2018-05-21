@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
  * Basic Spring web service controller that handles all GET requests.
  */
 @RestController
-@RequestMapping("/")
-public class HelloWorldController {
+@RequestMapping("/test")
+public class ParkingController {
 
-    private static final String MESSAGE_FORMAT = "11111Hello %s!";
+    private static final String MESSAGE_FORMAT = "22222Hello %s!";
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity helloWorldGet(@RequestParam(value = "name", defaultValue = "World") String name) {
