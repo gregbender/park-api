@@ -26,3 +26,8 @@ hs_err_pid*
 
 /.idea/vcs.xml
 /.idea/
+.gitignore
+.idea/misc.xml
+.idea/modules.xml
+.idea/park-api.iml
+.idea/workspace.xml
