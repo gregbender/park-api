@@ -25,11 +25,11 @@ import java.util.List;
 @RequestMapping("/test")
 public class ParkingController {
 
-//    @Autowired
-//    private ParkingService parkingService;
-//
-//    @Autowired
-//    private S3Service s3Service;
+    @Autowired
+    private ParkingService parkingService;
+
+    @Autowired
+    private S3Service s3Service;
 
     private static final String MESSAGE_FORMAT = "Niner22222Hello %s!";
 
