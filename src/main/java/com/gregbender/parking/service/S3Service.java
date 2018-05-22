@@ -26,6 +26,6 @@ public class S3Service {
 
     public String getUrl(String id) {
         S3Object s3Object = this.getS3Service().getObject(BUCKET_NAME, id);
-        return s3Object.getRedirectLocation();
+        return "https://s3.us-east-2.amazonaws.com/com.gregbender.parkings3/" + s3Object.getKey();
     }
 }

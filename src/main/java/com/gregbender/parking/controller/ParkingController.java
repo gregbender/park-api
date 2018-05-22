@@ -44,7 +44,7 @@ public class ParkingController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", s3Service.getUrl(id));
-        return new ResponseEntity<String>(headers,HttpStatus.FOUND);
+        return new ResponseEntity<String>(headers, HttpStatus.FOUND);
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json", path = "/zzz")
@@ -61,55 +61,30 @@ public class ParkingController {
         return new JSONObject().put("Output", String.format(MESSAGE_FORMAT, name)).toString();
     }
 
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json", path = "/vote/{id}")
+    public ResponseEntity<ParkingAttempt> vote(@PathVariable("id") String id, @RequestParam(name = "type", required = true) String type) {
+
+        ParkingAttempt.VOTE_DIRECTION voteDirection = ParkingAttempt.VOTE_DIRECTION.valueOf(type);
+        ParkingAttempt parkingAttempt = parkingService.vote(id, voteDirection);
+        return ResponseEntity.ok(parkingAttempt);
+    }
 
 
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json", path = "/upload")
+    public ResponseEntity<String> handleUpload(@RequestParam("file") MultipartFile file) {
+        /// uploadService.saveCase(myCase);
 
+        try {
+            InputStream inputStream = file.getInputStream();
+            byte[] fileAsBytes = IOUtils.toByteArray(inputStream);
+            parkingService.handleUpload(file.getOriginalFilename(), fileAsBytes);
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-// //   @PostMapping("/upload")
-//    public ResponseEntity<String> handleUpload(@RequestParam("file") MultipartFile file) {
-//        /// uploadService.saveCase(myCase);
-//
-//        try {
-//            InputStream inputStream = file.getInputStream();
-//            byte[] fileAsBytes = IOUtils.toByteArray(inputStream);
-//            parkingService.handleUpload(file.getOriginalFilename(), fileAsBytes);
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return ResponseEntity.ok("");
-//    }
-//
-
-//
-//   // @GetMapping("/vote/{id}")
-//    public ResponseEntity<ParkingAttempt> vote(@PathVariable("id") String id, @RequestParam(name = "type", required = true) String type) {
-//
-//        ParkingAttempt.VOTE_DIRECTION voteDirection = ParkingAttempt.VOTE_DIRECTION.valueOf(type);
-//        ParkingAttempt parkingAttempt = parkingService.vote(id, voteDirection);
-//        return ResponseEntity.ok(parkingAttempt);
-//    }
-//
-
-//
-//
-
-
+        return ResponseEntity.ok("");
+    }
 
 
 }

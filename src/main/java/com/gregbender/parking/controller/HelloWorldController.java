@@ -7,9 +7,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Basic Spring web service controller that handles all GET requests.
- */
 @RestController
 @RequestMapping("/")
 public class HelloWorldController {
@@ -18,11 +15,6 @@ public class HelloWorldController {
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity helloWorldGet(@RequestParam(value = "name", defaultValue = "World") String name) {
-        return ResponseEntity.ok(createResponse(name));
-    }
-
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    public ResponseEntity helloWorldPost(@RequestParam(value = "name", defaultValue = "World") String name) {
         return ResponseEntity.ok(createResponse(name));
     }
 
