@@ -33,7 +33,7 @@ public class ParkingController {
 
     private static final String MESSAGE_FORMAT = "Niner22222Hello %s!";
 
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json", path = "/zzz")
     public ResponseEntity helloWorldGet(@RequestParam(value = "name", defaultValue = "World") String name) {
         return ResponseEntity.ok(createResponse(name));
     }
