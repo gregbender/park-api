@@ -22,7 +22,7 @@ import java.util.List;
  * Basic Spring web service controller that handles all GET requests.
  */
 @RestController
-@RequestMapping("/test")
+@RequestMapping("/api")
 public class ParkingController {
 
     @Autowired
@@ -38,6 +38,14 @@ public class ParkingController {
         return ResponseEntity.ok(parkingService.getAllParkingAttempts());
     }
 
+
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json", path = "/view/{id}")
+    public ResponseEntity<String> view(@PathVariable("id") String id, RedirectAttributes redirectAttributes, HttpServletResponse resp) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", s3Service.getUrl(id));
+        return new ResponseEntity<String>(headers,HttpStatus.FOUND);
+    }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json", path = "/zzz")
     public ResponseEntity helloWorldGet(@RequestParam(value = "name", defaultValue = "World") String name) {
@@ -97,13 +105,7 @@ public class ParkingController {
 //        return ResponseEntity.ok(parkingAttempt);
 //    }
 //
-//   // @GetMapping("/view/{id}")
-//    public ResponseEntity<String> view(@PathVariable("id") String id, RedirectAttributes redirectAttributes, HttpServletResponse resp) {
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Location", s3Service.getUrl(id));
-//        return new ResponseEntity<String>(headers,HttpStatus.FOUND);
-//    }
+
 //
 //
 
