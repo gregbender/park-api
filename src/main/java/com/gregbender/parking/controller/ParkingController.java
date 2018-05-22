@@ -33,6 +33,12 @@ public class ParkingController {
 
     private static final String MESSAGE_FORMAT = "Niner22222Hello %s!";
 
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json", path = "/parkingAttempts/all")
+    public ResponseEntity<List<ParkingAttempt>> listAllParkingAttempts() {
+        return ResponseEntity.ok(parkingService.getAllParkingAttempts());
+    }
+
+
     @RequestMapping(method = RequestMethod.GET, produces = "application/json", path = "/zzz")
     public ResponseEntity helloWorldGet(@RequestParam(value = "name", defaultValue = "World") String name) {
         return ResponseEntity.ok(createResponse(name));
@@ -81,10 +87,7 @@ public class ParkingController {
 //        return ResponseEntity.ok("");
 //    }
 //
-//  //  @GetMapping("/parkingAttempts/all")
-//    public ResponseEntity<List<ParkingAttempt>> listAllParkingAttempts() {
-//        return ResponseEntity.ok(parkingService.getAllParkingAttempts());
-//    }
+
 //
 //   // @GetMapping("/vote/{id}")
 //    public ResponseEntity<ParkingAttempt> vote(@PathVariable("id") String id, @RequestParam(name = "type", required = true) String type) {
