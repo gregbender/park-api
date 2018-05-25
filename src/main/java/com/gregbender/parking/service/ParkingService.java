@@ -3,6 +3,7 @@ package com.gregbender.parking.service;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.gregbender.parking.model.ParkingAttempt;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +12,10 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
+@Slf4j
 public class ParkingService {
 
     @Autowired
@@ -25,11 +28,12 @@ public class ParkingService {
     private ParkingService parkingService;
 
     public void handleUpload(String origFileName, byte[] fileAsBytes) {
-
+        log.info("handling upload for: " + origFileName);
         try {
             BufferedImage image = ImageIO.read(new ByteArrayInputStream((fileAsBytes)));
 
             ParkingAttempt parkingAttempt = new ParkingAttempt();
+            parkingAttempt.setId(UUID.randomUUID().toString());
             parkingAttempt.setHeight(image.getHeight());
             parkingAttempt.setWidth(image.getWidth());
             parkingAttempt.setOrigFileName(origFileName);
@@ -49,7 +53,7 @@ public class ParkingService {
             ObjectMetadata md = new ObjectMetadata();
 
             md.setContentLength(parkingAttempt.getImageData().length);
-
+            md.setContentType("image/jpg");
             s3Service.add(parkingAttempt.getId(),  new ByteArrayInputStream(parkingAttempt.getImageData()), md);
         } catch (IOException e) {
             e.printStackTrace();

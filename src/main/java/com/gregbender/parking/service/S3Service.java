@@ -5,12 +5,14 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 @Service
+@Slf4j
 public class S3Service {
 
     private static final String BUCKET_NAME = "com.gregbender.parkings3";
@@ -25,6 +27,7 @@ public class S3Service {
     }
 
     public String getUrl(String id) {
+        log.info("Looking up S3 URL for key: {}", id);
         S3Object s3Object = this.getS3Service().getObject(BUCKET_NAME, id);
         return "https://s3.us-east-2.amazonaws.com/com.gregbender.parkings3/" + s3Object.getKey();
     }

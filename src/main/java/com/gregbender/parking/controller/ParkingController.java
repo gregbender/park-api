@@ -3,6 +3,13 @@ package com.gregbender.parking.controller;
 import com.gregbender.parking.model.ParkingAttempt;
 import com.gregbender.parking.service.ParkingService;
 import com.gregbender.parking.service.S3Service;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -23,6 +31,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("*")
 public class ParkingController {
 
     @Autowired
@@ -38,27 +47,12 @@ public class ParkingController {
         return ResponseEntity.ok(parkingService.getAllParkingAttempts());
     }
 
-
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json", path = "/view/{id}")
+    @RequestMapping(method = RequestMethod.GET, path = "/view/{id}")
     public ResponseEntity<String> view(@PathVariable("id") String id, RedirectAttributes redirectAttributes, HttpServletResponse resp) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", s3Service.getUrl(id));
         return new ResponseEntity<String>(headers, HttpStatus.FOUND);
-    }
-
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json", path = "/zzz")
-    public ResponseEntity helloWorldGet(@RequestParam(value = "name", defaultValue = "World") String name) {
-        return ResponseEntity.ok(createResponse(name));
-    }
-
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    public ResponseEntity helloWorldPost(@RequestParam(value = "name", defaultValue = "World") String name) {
-        return ResponseEntity.ok(createResponse(name));
-    }
-
-    private String createResponse(String name) {
-        return new JSONObject().put("Output", String.format(MESSAGE_FORMAT, name)).toString();
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json", path = "/vote/{id}")
@@ -69,15 +63,15 @@ public class ParkingController {
         return ResponseEntity.ok(parkingAttempt);
     }
 
-
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json", path = "/upload")
-    public ResponseEntity<String> handleUpload(@RequestParam("file") MultipartFile file) {
+    @RequestMapping(method = RequestMethod.POST, path = "/upload")
+    public ResponseEntity<String> handleUpload(InputStream dataStream) {
         /// uploadService.saveCase(myCase);
 
         try {
-            InputStream inputStream = file.getInputStream();
-            byte[] fileAsBytes = IOUtils.toByteArray(inputStream);
-            parkingService.handleUpload(file.getOriginalFilename(), fileAsBytes);
+            byte[] bytes = IOUtils.toByteArray(dataStream);
+            byte[] newbytes = Base64.decodeBase64(bytes);
+
+            parkingService.handleUpload("ingobankgo.jpg", newbytes);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,6 +79,4 @@ public class ParkingController {
 
         return ResponseEntity.ok("");
     }
-
-
 }
